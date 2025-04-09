@@ -31,16 +31,15 @@ public class ConsoleUI {
             System.out.println("4. Exit");
             int choice = scanner.nextInt();
 
-            switch (choice){
-                case 1: accessMemoryAddress();
-                break;
-                case 2: displayCacheState();
-                break;
-                case 3: runSimulation();
-                break;
-                case 4: System.out.println("Goodbye!");
-                return;
-                default: System.out.println("Invalid option. Please try again.");
+            switch (choice) {
+                case 1 -> accessMemoryAddress();
+                case 2 -> displayCacheState();
+                case 3 -> runSimulation();
+                case 4 -> {
+                    System.out.println("Goodbye!");
+                    return;
+                }
+                default -> System.out.println("Invalid option. Please try again.");
             }
         }
     }
@@ -58,7 +57,7 @@ public class ConsoleUI {
     }
 
     private String getCacheState(){
-        cacheStateRenderer.renderAsAscii(cacheSystem);
+        return cacheStateRenderer.renderAsAscii(cacheSystem);
     }
     private String runSimulation(){
         System.out.println("Running simulation with addresses: 13, 42, 8, 15, 73");
@@ -69,7 +68,7 @@ public class ConsoleUI {
             simulationStepPrinter.printAccessResult(address, result);
         }
             displayCacheState();
-        return cacheStateRenderer.renderAsAscii(cacheSystem);
+        return getCacheState();
         }
 
 }
