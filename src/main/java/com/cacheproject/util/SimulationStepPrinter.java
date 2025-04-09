@@ -1,7 +1,7 @@
 package com.cacheproject.util;
 
-import com.cacheproject.business.Address;
-import com.cacheproject.business.CacheAccessResult;
+import com.cacheproject.domain.cache.model.Address;
+import com.cacheproject.domain.cache.model.CacheAccessResult;
 
 public class SimulationStepPrinter {
     public void printAccessResult(Address address, CacheAccessResult result) {

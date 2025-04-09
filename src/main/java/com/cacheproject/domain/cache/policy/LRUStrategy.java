@@ -1,7 +1,11 @@
-package com.cacheproject.business;
+package com.cacheproject.domain.cache.policy;
+
+import com.cacheproject.domain.cache.model.CacheLine;
+import com.cacheproject.domain.cache.model.CacheSet;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LRUStrategy implements ReplacementStrategy {
     private final Map<CacheSet, Map<CacheLine, Long>> accessOrder = new HashMap<>();
@@ -17,7 +21,13 @@ public class LRUStrategy implements ReplacementStrategy {
 
     @Override
     public void updateAccessOrder(CacheSet set, CacheLine accessedLine) {
-        Map<CacheLine, Long> setAccessOrder = accessOrder.computeIfAbsent(set, k -> new HashMap<>());
-        setAccessOrder.put(accessedLine, System.nanoTime());
+        Objects.requireNonNull(set, "CacheSet cannot be null");
+        Objects.requireNonNull(accessedLine, "CacheLine cannot be null");
+
+        accessOrder.computeIfAbsent(set, k -> new HashMap<>())
+                .put(accessedLine, System.nanoTime());
     }
+
+
+
 }

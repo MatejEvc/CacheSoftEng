@@ -1,9 +1,8 @@
 package com.cacheproject.util;
 
-import com.cacheproject.business.CacheLine;
-import com.cacheproject.business.CacheSet;
-import com.cacheproject.business.CacheSystem;
-import com.cacheproject.business.Word;
+import com.cacheproject.domain.cache.model.CacheLine;
+import com.cacheproject.domain.cache.model.CacheSet;
+import com.cacheproject.domain.cache.model.CacheSystem;
 
 public class CacheStateRenderer {
 public String renderAsAscii(CacheSystem cacheSystem) {

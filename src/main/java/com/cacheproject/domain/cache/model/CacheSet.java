@@ -1,4 +1,6 @@
-package com.cacheproject.business;
+package com.cacheproject.domain.cache.model;
+
+import com.cacheproject.domain.cache.model.CacheLine;
 
 import java.util.Arrays;
 

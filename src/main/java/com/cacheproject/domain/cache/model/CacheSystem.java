@@ -1,4 +1,6 @@
-package com.cacheproject.business;
+package com.cacheproject.domain.cache.model;
+
+import com.cacheproject.domain.cache.policy.ReplacementStrategy;
 
 public class CacheSystem {
     private final CacheSet[] sets;

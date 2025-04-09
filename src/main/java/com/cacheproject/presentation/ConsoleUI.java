@@ -1,8 +1,8 @@
 package com.cacheproject.presentation;
 
-import com.cacheproject.business.Address;
-import com.cacheproject.business.CacheAccessResult;
-import com.cacheproject.business.CacheSystem;
+import com.cacheproject.domain.cache.model.Address;
+import com.cacheproject.domain.cache.model.CacheAccessResult;
+import com.cacheproject.domain.cache.model.CacheSystem;
 import com.cacheproject.util.CacheStateRenderer;
 import com.cacheproject.util.SimulationStepPrinter;
 
@@ -54,10 +54,13 @@ public class ConsoleUI {
     }
 
     private void displayCacheState(){
-        System.out.println(cacheStateRenderer.renderAsAscii(cacheSystem));
+        System.out.println(getCacheState());
     }
 
-    private void runSimulation(){
+    private String getCacheState(){
+        cacheStateRenderer.renderAsAscii(cacheSystem);
+    }
+    private String runSimulation(){
         System.out.println("Running simulation with addresses: 13, 42, 8, 15, 73");
         int[] addresses = {13, 42, 8, 15, 73};
         for (int addr : addresses) {
@@ -66,6 +69,7 @@ public class ConsoleUI {
             simulationStepPrinter.printAccessResult(address, result);
         }
             displayCacheState();
+        return cacheStateRenderer.renderAsAscii(cacheSystem);
         }
 
 }

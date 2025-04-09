@@ -1,6 +1,4 @@
-package com.cacheproject.business;
-
-import java.util.Objects;
+package com.cacheproject.domain.cache.model;
 
 public class Address {
     private final int value;
@@ -13,13 +11,20 @@ public class Address {
         return value;
     }
 
-    public int getTag(int setIndexBits, int offsetBits){
+    public int getTag(int setIndexBits, int offsetBits) {
+        //Fully Associative  Tag = address /blockSize
+        if (setIndexBits == 0) {
+            return value >>> (offsetBits);
+        }
+
         return value >>> (setIndexBits + offsetBits);
     }
 
     public int getSetIndex(int setIndexBits, int offsetBits) {
-        // Erst Offset entfernen, dann nur die Set-Bits maskieren
-        return (value >> offsetBits) & ((1 << setIndexBits) - 1);
+        // Für Fully Associative: 0 Set-Index
+        if (setIndexBits == 0) return 0;
+
+        return (value >>> offsetBits) & ((1 << setIndexBits) - 1);
     }
 
     public void printBitAnalysis(int offsetBits, int setIndexBits) {

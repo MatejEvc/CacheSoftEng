@@ -1,4 +1,4 @@
-package com.cacheproject.business;
+package com.cacheproject.domain.cache.model;
 
 public class CacheAccessResult {
     private final boolean hit;

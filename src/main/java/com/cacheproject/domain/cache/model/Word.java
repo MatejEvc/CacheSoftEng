@@ -1,6 +1,4 @@
-package com.cacheproject.business;
-
-import java.util.Objects;
+package com.cacheproject.domain.cache.model;
 
 public class Word {
     private final int value;
