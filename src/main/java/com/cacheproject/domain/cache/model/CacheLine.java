@@ -1,17 +1,16 @@
 package com.cacheproject.domain.cache.model;
 
+import com.cacheproject.domain.provider.WordProvider;
+
 public class CacheLine {
     private boolean valid;
     private int tag;
     private Word[] data;
 
-    public CacheLine(int wordsPerLine){
+    public CacheLine(int wordsPerLine, WordProvider wordProvider) {
         this.valid = false;
         this.tag = -1;
-        this.data = new Word[wordsPerLine];
-        for(int i = 0; i < wordsPerLine; i++){
-            this.data[i] = new Word(0);  //Default Words, evtl. aus einer Textdatei random lesen
-        }
+        this.data = wordProvider.provideWords(wordsPerLine);
     }
 
     public boolean isValid() {

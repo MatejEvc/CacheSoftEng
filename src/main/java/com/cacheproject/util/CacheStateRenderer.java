@@ -2,18 +2,18 @@ package com.cacheproject.util;
 
 import com.cacheproject.domain.cache.model.CacheLine;
 import com.cacheproject.domain.cache.model.CacheSet;
-import com.cacheproject.domain.cache.model.CacheSystem;
+import com.cacheproject.domain.cache.model.Cache;
 
 public class CacheStateRenderer {
-public String renderAsAscii(CacheSystem cacheSystem) {
+public String renderAsAscii(Cache cache) {
     StringBuilder sb = new StringBuilder();
     sb.append("Cache State (Binary Representation):\n");
     sb.append("+---------+---------+---------+-----------------+\n");
     sb.append("| Set     | Line    | Valid   | Tag (bin)       |\n");
     sb.append("+---------+---------+---------+-----------------+\n");
 
-    for (int i = 0; i < cacheSystem.getSetCount(); i++) {
-        CacheSet set = cacheSystem.getSet(i);
+    for (int i = 0; i < cache.getSetCount(); i++) {
+        CacheSet set = cache.getSet(i);
         for (int j = 0; j < set.getLineCount(); j++) {
             CacheLine line = set.getLine(j);
             String tagBinary = line.isValid()

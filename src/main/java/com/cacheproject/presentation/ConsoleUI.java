@@ -2,23 +2,26 @@ package com.cacheproject.presentation;
 
 import com.cacheproject.domain.cache.model.Address;
 import com.cacheproject.domain.cache.model.CacheAccessResult;
-import com.cacheproject.domain.cache.model.CacheSystem;
+import com.cacheproject.domain.service.CacheService;
 import com.cacheproject.util.CacheStateRenderer;
 import com.cacheproject.util.SimulationStepPrinter;
 
 import java.util.Scanner;
 
 public class ConsoleUI {
-    private final CacheSystem cacheSystem;
+
+    private final CacheService cacheService;
     private final CacheStateRenderer cacheStateRenderer;
     private final SimulationStepPrinter simulationStepPrinter;
     private final Scanner scanner;
+    private final String cacheId;
 
-    public ConsoleUI(CacheSystem cacheSystem) {
-        this.cacheSystem = cacheSystem;
+    public ConsoleUI(CacheService cacheService, String cacheId) {
+        this.cacheService = cacheService;
         this.cacheStateRenderer = new CacheStateRenderer();
         this.simulationStepPrinter = new SimulationStepPrinter();
         this.scanner = new Scanner(System.in);
+        this.cacheId = cacheId;
     }
 
     public void start(){
@@ -30,6 +33,7 @@ public class ConsoleUI {
             System.out.println("3. Run simulation");
             System.out.println("4. Exit");
             int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1 -> accessMemoryAddress();
@@ -47,28 +51,24 @@ public class ConsoleUI {
     private void accessMemoryAddress(){
         System.out.print("Enter memory address: ");
         int addressValue = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
         Address address = new Address(addressValue);
-        CacheAccessResult result = cacheSystem.access(address);
+        CacheAccessResult result = cacheService.accessCache(cacheId, address.getValue());
         simulationStepPrinter.printAccessResult(address, result);
     }
 
     private void displayCacheState(){
-        System.out.println(getCacheState());
+        System.out.println(cacheStateRenderer.renderAsAscii(cacheService.getCache(cacheId)));
     }
 
-    private String getCacheState(){
-        return cacheStateRenderer.renderAsAscii(cacheSystem);
-    }
-    private String runSimulation(){
+    private void runSimulation(){
         System.out.println("Running simulation with addresses: 13, 42, 8, 15, 73");
         int[] addresses = {13, 42, 8, 15, 73};
         for (int addr : addresses) {
             Address address = new Address(addr);
-            CacheAccessResult result = cacheSystem.access(address);
+            CacheAccessResult result = cacheService.accessCache(cacheId, address.getValue());
             simulationStepPrinter.printAccessResult(address, result);
         }
-            displayCacheState();
-        return getCacheState();
-        }
-
+        displayCacheState();
+    }
 }

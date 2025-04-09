@@ -1,16 +1,17 @@
 package com.cacheproject.domain.cache.model;
 
 import com.cacheproject.domain.cache.model.CacheLine;
+import com.cacheproject.domain.provider.WordProvider;
 
 import java.util.Arrays;
 
 public class CacheSet {
     public final CacheLine[] lines;
 
-    public CacheSet(int associativity, int wordsPerLine) {
+    public CacheSet(int associativity, int wordsPerLine, WordProvider wordProvider) {
         this.lines = new CacheLine[associativity];
         for (int i = 0; i < associativity; i++) {
-            lines[i] = new CacheLine(wordsPerLine);
+            lines[i] = new CacheLine(wordsPerLine, wordProvider);
         }
     }
 

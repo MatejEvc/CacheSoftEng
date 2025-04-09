@@ -21,13 +21,14 @@ public class Address {
     }
 
     public int getSetIndex(int setIndexBits, int offsetBits) {
-        // Für Fully Associative: 0 Set-Index
+        // für fully Associative: 0 SetIndex
         if (setIndexBits == 0) return 0;
 
         return (value >>> offsetBits) & ((1 << setIndexBits) - 1);
     }
 
-    public void printBitAnalysis(int offsetBits, int setIndexBits) {
+
+    public String getBitAnalysis(int offsetBits, int setIndexBits) {
         String binary = String.format("%32s", Integer.toBinaryString(value)).replace(' ', '0');
         binary = binary.substring(binary.length() - 8); // Nur die rechten 8 Bits
 
@@ -38,32 +39,13 @@ public class Address {
         int set = (value >>> offsetBits) & setMask;
         int tag = value >>> (offsetBits + setIndexBits);
 
-        System.out.printf(
+        return String.format(
                 "Adresse %3d (%8s): Offset=%2s | Set=%3s | Tag=%3s%n",
                 value,
                 binary,
                 binary.substring(binary.length() - offsetBits),
                 binary.substring(binary.length() - offsetBits - setIndexBits, binary.length() - offsetBits),
                 binary.substring(0, binary.length() - offsetBits - setIndexBits)
-        );
-    }
-
-    public void debugBitExtraction(int offsetBits, int setIndexBits) {
-        int shifted = value >> offsetBits;
-        int mask = (1 << setIndexBits) - 1;
-        int setIndex = shifted & mask;
-
-        System.out.printf(
-                "DEBUG: value=%d (%8s) >> %d = %d (%s) & %d (%s) → SetIndex=%d (%s)%n",
-                value,
-                String.format("%8s", Integer.toBinaryString(value)).replace(' ', '0'),
-                offsetBits,
-                shifted,
-                Integer.toBinaryString(shifted),
-                mask,
-                Integer.toBinaryString(mask),
-                setIndex,
-                Integer.toBinaryString(setIndex)
         );
     }
 

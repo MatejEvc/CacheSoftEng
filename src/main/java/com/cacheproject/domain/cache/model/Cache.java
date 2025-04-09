@@ -1,22 +1,25 @@
 package com.cacheproject.domain.cache.model;
 
 import com.cacheproject.domain.cache.policy.ReplacementStrategy;
+import com.cacheproject.domain.provider.WordProvider;
 
-public class CacheSystem {
+public class Cache {
     private final CacheSet[] sets;
     private final int setIndexBits;
     private final int offsetBits;
     private final ReplacementStrategy replacementStrategy;
+    private final WordProvider wordProvider;
 
-    public CacheSystem(int setCount, int associativity, int wordsPerLine, ReplacementStrategy
-                       replacementStrategy){
+    public Cache(int setCount, int associativity, int wordsPerLine, ReplacementStrategy
+            replacementStrategy, WordProvider wordProvider){
         this.sets = new CacheSet[setCount];
         for(int i = 0; i < setCount; i++){
-            sets[i] = new CacheSet(associativity, wordsPerLine);
+            sets[i] = new CacheSet(associativity, wordsPerLine, wordProvider);
         }
         this.offsetBits = Integer.numberOfTrailingZeros(wordsPerLine);
         this.setIndexBits = Integer.numberOfTrailingZeros(setCount);
         this.replacementStrategy = replacementStrategy;
+        this.wordProvider = wordProvider;
     }
 
     public CacheAccessResult access(Address address){
@@ -37,7 +40,6 @@ public class CacheSystem {
 
         if(line != null && line.isValid()){
             replacementStrategy.updateAccessOrder(set, line);
-//            System.out.printf("Adresse %d → Set %d, Tag %d%n", address.getValue(), setIndex, tag); //DEBUG
             return new CacheAccessResult(true, line.getWord(offset));
 
         } else {
@@ -47,12 +49,9 @@ public class CacheSystem {
             }
             newLine.setValid(true);
             newLine.setTag(tag);
-            //hier data fetchen
-            for(int i = 0; i < newLine.getData().length; i++){
-                newLine.setWord(i, new Word(0)); //Platzhalter
-            }
+
+
             replacementStrategy.updateAccessOrder(set, newLine);
-//            System.out.printf("Adresse %d → Set %d, Tag %d%n" address.getValue(), setIndex, tag); //DEBUG
             return new CacheAccessResult(false, newLine.getWord(offset));
         }
     }
@@ -63,6 +62,10 @@ public class CacheSystem {
 
     public CacheSet getSet(int index){
         return sets[index];
+    }
+
+    public WordProvider getWordProvider() {
+        return wordProvider;
     }
 
 }
