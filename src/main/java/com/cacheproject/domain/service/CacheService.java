@@ -5,6 +5,7 @@ import com.cacheproject.domain.cache.factory.CacheFactory;
 import com.cacheproject.domain.cache.model.Address;
 import com.cacheproject.domain.cache.model.CacheAccessResult;
 import com.cacheproject.domain.cache.model.Cache;
+import com.cacheproject.domain.cache.model.CacheStatistics;
 import com.cacheproject.domain.cache.repository.CacheRepository;
 import com.cacheproject.domain.types.CacheType;
 
@@ -33,5 +34,13 @@ public class CacheService {
     public Cache getCache(String cacheId) {
         return cacheRepository.findById(cacheId);
 
+    }
+
+    public CacheStatistics getStatistics(String cacheId){
+        Cache cache = cacheRepository.findById(cacheId);
+        if (cache == null) {
+            throw new IllegalArgumentException("Cache whit id " + cacheId + " not found!");
+        }
+        return cache.getStatistics();
     }
 }

@@ -2,9 +2,19 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="fiducia-thirdparty" />
+      <option name="name" value="Fiducia Thirdparty Repository" />
+      <option name="url" value="https://nexus.rz.bankenit.de/repository/fiducia-thirdparty/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="fiducia-releases" />
+      <option name="name" value="Fiducia Release Repository" />
+      <option name="url" value="https://nexus.rz.bankenit.de/repository/FiduciaReleases/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -12,9 +22,19 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="fiducia-snapshots" />
+      <option name="name" value="Fiducia Snapshot Repository" />
+      <option name="url" value="https://nexus.rz.bankenit.de/repository/maven2-internet-proxy/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://nexus.rz.bankenit.de/repository/maven2-internet-proxy/" />
     </remote-repository>
   </component>
 </project>

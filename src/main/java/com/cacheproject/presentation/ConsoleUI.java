@@ -5,6 +5,7 @@ import com.cacheproject.domain.cache.model.CacheAccessResult;
 import com.cacheproject.domain.service.CacheService;
 import com.cacheproject.util.CacheStateRenderer;
 import com.cacheproject.util.SimulationStepPrinter;
+import com.cacheproject.util.StatisticsPrinter;
 
 import java.util.Scanner;
 
@@ -13,6 +14,7 @@ public class ConsoleUI {
     private final CacheService cacheService;
     private final CacheStateRenderer cacheStateRenderer;
     private final SimulationStepPrinter simulationStepPrinter;
+    private final StatisticsPrinter statisticsPrinter;
     private final Scanner scanner;
     private final String cacheId;
 
@@ -20,26 +22,31 @@ public class ConsoleUI {
         this.cacheService = cacheService;
         this.cacheStateRenderer = new CacheStateRenderer();
         this.simulationStepPrinter = new SimulationStepPrinter();
+        this.statisticsPrinter = new StatisticsPrinter();
         this.scanner = new Scanner(System.in);
         this.cacheId = cacheId;
     }
 
     public void start(){
-        System.out.println("Welcome to my Cache Sim");
+        System.out.println("Welcome to my Cache Simulator");
         while (true){
             System.out.println("\nPlease choose an option:");
             System.out.println("1. Access memory address");
             System.out.println("2. Display cache state");
             System.out.println("3. Run simulation");
-            System.out.println("4. Exit");
+            System.out.println("4. Show statistics");
+            System.out.println("5. Reset statistics");
+            System.out.println("6. Exit");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (choice) {
                 case 1 -> accessMemoryAddress();
                 case 2 -> displayCacheState();
                 case 3 -> runSimulation();
-                case 4 -> {
+                case 4 -> showStatistics();
+                case 5 -> resetStatistics();
+                case 6 -> {
                     System.out.println("Goodbye!");
                     return;
                 }
@@ -71,4 +78,14 @@ public class ConsoleUI {
         }
         displayCacheState();
     }
+
+    private void showStatistics() {
+        statisticsPrinter.printStatistics(cacheService.getStatistics(cacheId));
+    }
+
+    private void resetStatistics() {
+        cacheService.getStatistics(cacheId).reset();
+        System.out.println("Statistics have been reset.");
+    }
+
 }
