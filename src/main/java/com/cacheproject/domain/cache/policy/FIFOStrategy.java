@@ -2,6 +2,7 @@ package com.cacheproject.domain.cache.policy;
 
 import com.cacheproject.domain.cache.model.CacheLine;
 import com.cacheproject.domain.cache.model.CacheSet;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,5 +22,10 @@ public class FIFOStrategy implements ReplacementStrategy {
     public void updateAccessOrder(CacheSet set, CacheLine accessedLine) {
         Map<CacheLine, Long> times = insertionTimes.computeIfAbsent(set, k -> new HashMap<>());
         times.putIfAbsent(accessedLine, System.nanoTime()); // Nur beim ersten Einfügen speichern
+    }
+
+    @VisibleForTesting
+    public Map<CacheSet, Map<CacheLine, Long>> getInsertionTimes(){
+        return insertionTimes;
     }
 }

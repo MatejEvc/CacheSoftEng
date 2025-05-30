@@ -1,9 +1,12 @@
-package com.cacheproject.domain.cache.policy;
+package com.cacheproject.business;
 
 import com.cacheproject.domain.cache.model.CacheLine;
 import com.cacheproject.domain.cache.model.CacheSet;
+import com.cacheproject.domain.cache.policy.FIFOStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -11,7 +14,7 @@ import static org.mockito.Mockito.*;
 class FIFOStrategyTest {
 
     private FIFOStrategy fifoStrategy;
-    private CacheSet mockSet;
+    private CacheSet set;
     private CacheLine line1;
     private CacheLine line2;
     private CacheLine line3;
@@ -19,56 +22,57 @@ class FIFOStrategyTest {
     @BeforeEach
     void setUp() {
         fifoStrategy = new FIFOStrategy();
-        mockSet = mock(CacheSet.class);
+        set = mock(CacheSet.class);
         line1 = mock(CacheLine.class);
         line2 = mock(CacheLine.class);
         line3 = mock(CacheLine.class);
 
-        when(mockSet.getLineCount()).thenReturn(3);
-        when(mockSet.getLine(0)).thenReturn(line1);
-        when(mockSet.getLine(1)).thenReturn(line2);
-        when(mockSet.getLine(2)).thenReturn(line3);
+        when(set.getLineCount()).thenReturn(3);
+        when(set.getLine(0)).thenReturn(line1);
+        when(set.getLine(1)).thenReturn(line2);
+        when(set.getLine(2)).thenReturn(line3);
     }
 
     @Test
     void selectLineForReplacing_returnsFirstInsertedLine_whenAllHaveDifferentInsertTimes() throws InterruptedException {
-        fifoStrategy.updateAccessOrder(mockSet, line2);
+        fifoStrategy.updateAccessOrder(set, line2);
         Thread.sleep(2);
-        fifoStrategy.updateAccessOrder(mockSet, line1);
+        fifoStrategy.updateAccessOrder(set, line1);
         Thread.sleep(2);
-        fifoStrategy.updateAccessOrder(mockSet, line3);
+        fifoStrategy.updateAccessOrder(set, line3);
 
-        assertEquals(line2, fifoStrategy.selectLineForReplacing(mockSet));
+        assertSame(line2, fifoStrategy.selectLineForReplacing(set));
     }
 
     @Test
-    void selectLineForReplacing_returnsFirstLine_whenNoInsertions() {
-        assertSame(line1, fifoStrategy.selectLineForReplacing(mockSet));
+    void selectLineForReplacing_returnsFirstLine_whenNoInsertionsTracked() {
+        assertSame(line1, fifoStrategy.selectLineForReplacing(set));
     }
 
     @Test
-    void updateAccessOrder_onlySetsInsertionTimeOnce() {
-        fifoStrategy.updateAccessOrder(mockSet, line1);
-        long firstTime = getInsertionTime(mockSet, line1);
+    void updateAccessOrder_onlySetsInsertionTimeOnce() throws InterruptedException {
+        fifoStrategy.updateAccessOrder(set, line1);
+        long firstTime = getInsertionTime(set, line1);
 
-        fifoStrategy.updateAccessOrder(mockSet, line1);
-        long secondTime = getInsertionTime(mockSet, line1);
+        Thread.sleep(2);
+        fifoStrategy.updateAccessOrder(set, line1);
+        long secondTime = getInsertionTime(set, line1);
 
         assertEquals(firstTime, secondTime);
     }
 
     @Test
-    void insertionTimes_areISolatedPerCacheSet() {
+    void insertionTimes_areIsolatedPerCacheSet() {
         CacheSet anotherSet = mock(CacheSet.class);
         CacheLine anotherLine = mock(CacheLine.class);
         when(anotherSet.getLineCount()).thenReturn(1);
         when(anotherSet.getLine(0)).thenReturn(anotherLine);
 
-        fifoStrategy.updateAccessOrder(mockSet, line1);
+        fifoStrategy.updateAccessOrder(set, line1);
         fifoStrategy.updateAccessOrder(anotherSet, anotherLine);
 
         assertNotEquals(
-                getInsertionTime(mockSet, line1),
+                getInsertionTime(set, line1),
                 getInsertionTime(anotherSet, anotherLine)
         );
     }
@@ -84,21 +88,8 @@ class FIFOStrategyTest {
     }
 
     private Long getInsertionTime(CacheSet set, CacheLine line) {
-        try {
-            var field = FIFOTestHelper.getInsertionTimesField(fifoStrategy);
-            var map = (java.util.Map<CacheSet, java.util.Map<CacheLine, Long>>) field.get(fifoStrategy);
-            if (!map.containsKey(set)) return null;
-            return map.get(set).get(line);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static class FIFOTestHelper {
-        static java.lang.reflect.Field getInsertionTimesField(FIFOStrategy strategy) throws Exception {
-            var field = FIFOStrategy.class.getDeclaredField("insertionTimes");
-            field.setAccessible(true);
-            return field;
-        }
+        Map<CacheSet, Map<CacheLine, Long>> map = fifoStrategy.getInsertionTimes();
+        if (!map.containsKey(set)) return null;
+        return map.get(set).get(line);
     }
 }

@@ -42,12 +42,12 @@ class LFUStrategyTest {
 
     @Test
     void selectLineForReplacing_returnsLeastFrequentlyUsedLine_whenFrequenciesDiffer() {
-        lfuStrategy.updateAccessOrder(set, line1); // 1
-        lfuStrategy.updateAccessOrder(set, line2); // 1
-        lfuStrategy.updateAccessOrder(set, line3); // 1
-        lfuStrategy.updateAccessOrder(set, line2); // 2
-        lfuStrategy.updateAccessOrder(set, line3); // 2
-        lfuStrategy.updateAccessOrder(set, line3); // 3
+        lfuStrategy.updateAccessOrder(set, line1);
+        lfuStrategy.updateAccessOrder(set, line2);
+        lfuStrategy.updateAccessOrder(set, line3);
+        lfuStrategy.updateAccessOrder(set, line2);
+        lfuStrategy.updateAccessOrder(set, line3);
+        lfuStrategy.updateAccessOrder(set, line3);
         // line1:1, line2:2, line3:3 -> line1 ist min
         assertSame(line1, lfuStrategy.selectLineForReplacing(set));
     }

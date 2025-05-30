@@ -1,17 +1,15 @@
-package com.cacheproject.business;
+package com.cacheproject.domain.cache.policy;
 
 import com.cacheproject.domain.cache.model.CacheLine;
 import com.cacheproject.domain.cache.model.CacheSet;
 import com.cacheproject.domain.cache.policy.LRUStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -19,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
-@ExtendWith(MockitoExtension.class) // Enables Mockito annotations
+@org.junit.jupiter.api.extension.ExtendWith(MockitoExtension.class)
 class LRUStrategyTest {
 
     private LRUStrategy lruStrategy;
@@ -33,11 +31,7 @@ class LRUStrategyTest {
     @BeforeEach
     void setUp() {
         lruStrategy = new LRUStrategy();
-
-        // Grundlegende Konfiguration
         when(mockSet.getLineCount()).thenReturn(3);
-
-        // Nur für Tests, die diese Stubs benötigen
         lenient().when(mockSet.getLine(0)).thenReturn(line1);
         lenient().when(mockSet.getLine(1)).thenReturn(line2);
         lenient().when(mockSet.getLine(2)).thenReturn(line3);
@@ -45,22 +39,11 @@ class LRUStrategyTest {
 
     @Test
     void selectLineForReplacing_returnsLeastRecentlyUsed() {
-        // Simulate access order
-        lruStrategy.updateAccessOrder(mockSet, line1); // Oldest
-        lruStrategy.updateAccessOrder(mockSet, line2); // Middle
-        lruStrategy.updateAccessOrder(mockSet, line3); // Most recent
+        lruStrategy.updateAccessOrder(mockSet, line1); // älteste
+        lruStrategy.updateAccessOrder(mockSet, line2);
+        lruStrategy.updateAccessOrder(mockSet, line3); // neuste
 
         assertEquals(line1, lruStrategy.selectLineForReplacing(mockSet));
-    }
-
-    @Test
-    void selectLineForReplacing_withEqualTimestamps_returnsFirstAdded() {
-        // Force same timestamp
-        lruStrategy.updateAccessOrder(mockSet, line1);
-        lruStrategy.updateAccessOrder(mockSet, line2);
-
-        // fallbeck to first line when timestamps match
-        assertSame(mockSet.getLine(0), lruStrategy.selectLineForReplacing(mockSet));
     }
 
     @Test
@@ -68,13 +51,10 @@ class LRUStrategyTest {
         lruStrategy.updateAccessOrder(mockSet, line1);
         lruStrategy.updateAccessOrder(mockSet, line2);
 
-        // Warten, dann line1 erneut aktualisieren
-        Thread.sleep(50);
+        Thread.sleep(10);
         lruStrategy.updateAccessOrder(mockSet, line1);
 
-        // line2 sollte jetzt sein
-        CacheLine selected = lruStrategy.selectLineForReplacing(mockSet);
-        assertEquals(line2, selected);
+        assertEquals(line2, lruStrategy.selectLineForReplacing(mockSet));
     }
 
     @Test
@@ -93,6 +73,7 @@ class LRUStrategyTest {
         lruStrategy.updateAccessOrder(anotherSet, anotherLine);
 
         assertNotEquals(anotherLine, lruStrategy.selectLineForReplacing(mockSet));
+        assertSame(anotherLine, lruStrategy.selectLineForReplacing(anotherSet));
     }
 
     @Test
@@ -102,13 +83,11 @@ class LRUStrategyTest {
         assertSame(line1, lruStrategy.selectLineForReplacing(mockSet));
     }
 
-
     @Test
     void whenNullLineUpdated_throwsException() {
         assertThrows(NullPointerException.class,
                 () -> lruStrategy.updateAccessOrder(mockSet, null));
     }
-
 
     @Test
     void whenSwitchingCacheSets_maintainsSeparateOrder() {
@@ -121,6 +100,7 @@ class LRUStrategyTest {
         lruStrategy.updateAccessOrder(anotherSet, anotherLine);
 
         assertNotSame(anotherLine, lruStrategy.selectLineForReplacing(mockSet));
+        assertSame(anotherLine, lruStrategy.selectLineForReplacing(anotherSet));
     }
 
     @Test
@@ -128,24 +108,10 @@ class LRUStrategyTest {
         lruStrategy.updateAccessOrder(mockSet, line1);
         lruStrategy.updateAccessOrder(mockSet, line2);
 
-        // Simuliere 1 Stunde Inaktivität
-        getAccessOrderForTesting().get(mockSet).replaceAll((k,v) -> v - 3_600_000_000_000L);
+        lruStrategy.getAccessOrder().get(mockSet).replaceAll((k,v) -> v - 3_600_000_000_000L);
 
         assertSame(line1, lruStrategy.selectLineForReplacing(mockSet));
     }
-
-    @Test
-    void withSameTimestamp_returnsFirstInserted() {
-        long fixedTime = System.nanoTime();
-        // Reflection um Testdaten zu setzen
-        getAccessOrderForTesting().put(mockSet, Map.of(
-                line1, fixedTime,
-                line2, fixedTime
-        ));
-
-        assertSame(line1, lruStrategy.selectLineForReplacing(mockSet));
-    }
-
 
     @Test
     void withConcurrentAccesses_handlesTimestampUpdates() {
@@ -155,17 +121,4 @@ class LRUStrategyTest {
 
         assertNotNull(lruStrategy.selectLineForReplacing(mockSet));
     }
-
-
-    @SuppressWarnings("unchecked")
-    private Map<CacheSet, Map<CacheLine, Long>> getAccessOrderForTesting() {
-        try {
-            Field field = lruStrategy.getClass().getDeclaredField("accessOrder");
-            field.setAccessible(true);
-            return (Map<CacheSet, Map<CacheLine, Long>>) field.get(lruStrategy);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 }

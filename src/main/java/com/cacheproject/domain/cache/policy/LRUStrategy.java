@@ -6,6 +6,7 @@ import com.cacheproject.domain.cache.model.CacheSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.jetbrains.annotations.VisibleForTesting;
 
 public class LRUStrategy implements ReplacementStrategy {
     private final Map<CacheSet, Map<CacheLine, Long>> accessOrder = new HashMap<>();
@@ -26,6 +27,11 @@ public class LRUStrategy implements ReplacementStrategy {
 
         accessOrder.computeIfAbsent(set, k -> new HashMap<>())
                 .put(accessedLine, System.nanoTime());
+    }
+
+    @VisibleForTesting
+    public Map<CacheSet, Map<CacheLine, Long>> getAccessOrder() {
+        return accessOrder;
     }
 
 
