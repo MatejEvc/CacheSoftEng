@@ -6,6 +6,7 @@ import com.cacheproject.domain.service.CacheService;
 import com.cacheproject.util.CacheStateRenderer;
 import com.cacheproject.util.SimulationStepPrinter;
 import com.cacheproject.util.StatisticsPrinter;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.Scanner;
 
@@ -54,8 +55,8 @@ public class ConsoleUI {
             }
         }
     }
-
-    private void accessMemoryAddress(){
+    @VisibleForTesting
+    void accessMemoryAddress(){
         System.out.print("Enter memory address: ");
         int addressValue = scanner.nextInt();
         scanner.nextLine(); // Consume newline
@@ -63,12 +64,13 @@ public class ConsoleUI {
         CacheAccessResult result = cacheService.accessCache(cacheId, address.getValue());
         simulationStepPrinter.printAccessResult(address, result);
     }
-
-    private void displayCacheState(){
+    @VisibleForTesting
+    void displayCacheState(){
         System.out.println(cacheStateRenderer.renderAsAscii(cacheService.getCache(cacheId)));
     }
 
-    private void runSimulation(){
+    @VisibleForTesting
+    void runSimulation(){
         System.out.println("Running simulation with addresses: 13, 42, 8, 15, 73");
         int[] addresses = {13, 42, 8, 15, 73};
         for (int addr : addresses) {

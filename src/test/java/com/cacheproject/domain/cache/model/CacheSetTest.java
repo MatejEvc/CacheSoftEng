@@ -17,7 +17,7 @@ class CacheSetTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        //liefere für jede Anfrage ein Array von vier Words mit Wert 0,1,2,3
+        //Array von vier Words mit Wert 0,1,2,3
         when(mockWordProvider.provideWords(anyInt()))
                 .thenAnswer(invocation -> {
                     int size = invocation.getArgument(0);
@@ -79,7 +79,7 @@ class CacheSetTest {
         assertNotNull(emptyLine);
         assertFalse(emptyLine.isValid());
 
-        // Markiere erste line als valid
+        // 1. line als valid
         set.getLine(0).setValid(true);
         CacheLine stillEmpty = set.findEmptyLine();
         assertSame(set.getLine(1), stillEmpty);

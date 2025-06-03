@@ -16,6 +16,7 @@ public class LFUStrategy implements ReplacementStrategy {
         Map<CacheLine, Integer> counts = accessCounts.getOrDefault(set, new HashMap<>());
         CacheLine minLine = null;
         int minCount = Integer.MAX_VALUE;
+
         for (int i = 0; i < set.getLineCount(); i++) {
             CacheLine line = set.getLine(i);
             int count = counts.getOrDefault(line, 0);
@@ -26,6 +27,7 @@ public class LFUStrategy implements ReplacementStrategy {
         }
         return minLine;
     }
+
 
 
     @Override

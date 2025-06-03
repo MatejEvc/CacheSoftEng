@@ -9,10 +9,10 @@ import com.cacheproject.domain.types.NWayAssociativeCache;
 
 public class CacheFactory {
 
-    public static Cache createCache(
-            CacheType type,
-            CacheConfiguration config
-    ) {
+    public static Cache createCache(CacheType type, CacheConfiguration config) {
+        if (type == null) {
+            throw new IllegalArgumentException("Cache type is not allowed to be null");
+        }
         return switch (type) {
             case DIRECT_MAPPED -> new DirectMappedCache(config.getSetCount(), config.getWordsPerLine(), config.getReplacementStrategy(), config.getWordProvider());
             case FULLY_ASSOCIATIVE -> new FullyAssociativeCache(config.getAssociativity(), config.getWordsPerLine(), config.getReplacementStrategy(), config.getWordProvider());
@@ -20,5 +20,6 @@ public class CacheFactory {
             default -> throw new IllegalArgumentException("Unsupported cache type");
         };
     }
+
 
 }

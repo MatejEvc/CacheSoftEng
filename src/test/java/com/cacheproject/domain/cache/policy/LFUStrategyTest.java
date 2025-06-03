@@ -62,14 +62,19 @@ class LFUStrategyTest {
 
     @Test
     void accessCounts_areIsolatedPerCacheSet() {
-        CacheSet anotherSet = new CacheSet(1, 2, size -> new Word[]{
-                new Word(0), new Word(1)});
+        CacheSet anotherSet = new CacheSet(1, 2, size -> new Word[]{new Word(0), new Word(1)});
         CacheLine anotherLine = anotherSet.getLine(0);
+
         lfuStrategy.updateAccessOrder(set, line1);
+        lfuStrategy.updateAccessOrder(set, line2);
+        lfuStrategy.updateAccessOrder(set, line3);
+
         lfuStrategy.updateAccessOrder(anotherSet, anotherLine);
+
         assertSame(line1, lfuStrategy.selectLineForReplacing(set));
         assertSame(anotherLine, lfuStrategy.selectLineForReplacing(anotherSet));
     }
+
 
 
     @Test
