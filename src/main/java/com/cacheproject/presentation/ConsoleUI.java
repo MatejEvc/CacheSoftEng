@@ -4,6 +4,7 @@ import com.cacheproject.domain.cache.model.Address;
 import com.cacheproject.domain.cache.model.CacheAccessResult;
 import com.cacheproject.domain.service.CacheService;
 import com.cacheproject.util.CacheStateRenderer;
+import com.cacheproject.util.MenuHelper;
 import com.cacheproject.util.SimulationStepPrinter;
 import com.cacheproject.util.StatisticsPrinter;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -28,16 +29,10 @@ public class ConsoleUI {
         this.cacheId = cacheId;
     }
 
-    public void start(){
+    public void start() {
         System.out.println("Welcome to my Cache Simulator");
         while (true){
-            System.out.println("\nPlease choose an option:");
-            System.out.println("1. Access memory address");
-            System.out.println("2. Display cache state");
-            System.out.println("3. Run simulation");
-            System.out.println("4. Show statistics");
-            System.out.println("5. Reset statistics");
-            System.out.println("6. Exit");
+            MenuHelper.displayMenu();
             int choice = scanner.nextInt();
             scanner.nextLine();
 

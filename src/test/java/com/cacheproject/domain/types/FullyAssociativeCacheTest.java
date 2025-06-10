@@ -4,6 +4,7 @@ import com.cacheproject.domain.cache.model.Address;
 import com.cacheproject.domain.cache.model.CacheAccessResult;
 import com.cacheproject.domain.cache.policy.FIFOStrategy;
 import com.cacheproject.domain.provider.StaticWordProvider;
+import com.cacheproject.util.CacheTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,13 +16,10 @@ class FullyAssociativeCacheTest {
 
     @BeforeEach
     void setUp() {
-        cache = new FullyAssociativeCache(
-                3,
-                2,
-                new FIFOStrategy(),
-                new StaticWordProvider(5)
-        );
+        cache = (FullyAssociativeCache) CacheTestHelper.createTestCache(
+                CacheType.FULLY_ASSOCIATIVE, 1, 3, 2, 5);
     }
+
 
     @Test
     void getSetCount_isAlwaysOne() {

@@ -4,6 +4,7 @@ import com.cacheproject.domain.cache.model.Address;
 import com.cacheproject.domain.cache.model.CacheAccessResult;
 import com.cacheproject.domain.cache.policy.FIFOStrategy;
 import com.cacheproject.domain.provider.StaticWordProvider;
+import com.cacheproject.util.CacheTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,13 +16,10 @@ class DirectMappedCacheTest {
 
     @BeforeEach
     void setUp() {
-        cache = new DirectMappedCache(
-                4,
-                2,
-                new FIFOStrategy(),
-                new StaticWordProvider(11)
-        );
+        cache = (DirectMappedCache) CacheTestHelper.createTestCache(
+                CacheType.DIRECT_MAPPED, 4, 1, 2, 11);
     }
+
 
     @Test
     void getSetCount_returnsCorrectValue() {

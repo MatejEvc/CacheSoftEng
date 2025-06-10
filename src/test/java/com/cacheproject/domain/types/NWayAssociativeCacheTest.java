@@ -4,6 +4,7 @@ import com.cacheproject.domain.cache.model.Address;
 import com.cacheproject.domain.cache.model.CacheAccessResult;
 import com.cacheproject.domain.cache.policy.FIFOStrategy;
 import com.cacheproject.domain.provider.StaticWordProvider;
+import com.cacheproject.util.CacheTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,14 +16,10 @@ class NWayAssociativeCacheTest {
 
     @BeforeEach
     void setUp() {
-        cache = new NWayAssociativeCache(
-                2,
-                2,
-                2,
-                new FIFOStrategy(),
-                new StaticWordProvider(7)
-        );
+        cache = (NWayAssociativeCache) CacheTestHelper.createTestCache(
+                CacheType.N_WAY, 2, 2, 2, 7);
     }
+
 
     @Test
     void getSetCount_returnsCorrectValue() {
