@@ -1,19 +1,18 @@
 package com.cacheproject.presentation;
 
 import com.cacheproject.domain.cache.model.Cache;
-import com.cacheproject.domain.cache.model.CacheAccessResult;
 import com.cacheproject.domain.service.CacheService;
 import com.cacheproject.util.CacheStateRenderer;
 import com.cacheproject.util.SimulationStepPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class ConsoleUITest {
 

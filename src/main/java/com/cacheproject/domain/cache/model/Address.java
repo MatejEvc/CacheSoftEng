@@ -3,11 +3,11 @@ package com.cacheproject.domain.cache.model;
 public class Address {
     private final int value;
 
-    public Address(int value){
+    public Address(int value) {
         this.value = value;
     }
 
-    public int getValue(){
+    public int getValue() {
         return value;
     }
 
@@ -49,7 +49,7 @@ public class Address {
         );
     }
 
-    public int getOffset(int offsetBits){
+    public int getOffset(int offsetBits) {
         return value & ((1 << offsetBits) - 1);
     }
 
