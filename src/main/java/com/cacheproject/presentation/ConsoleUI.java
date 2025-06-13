@@ -54,7 +54,7 @@ public class ConsoleUI {
     void accessMemoryAddress(){
         System.out.print("Enter memory address: ");
         int addressValue = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine();
         Address address = new Address(addressValue);
         CacheAccessResult result = cacheService.accessCache(cacheId, address.getValue());
         simulationStepPrinter.printAccessResult(address, result);
